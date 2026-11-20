@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YCBA-SR · Youth Coach Behavioral Assessment (Self-Report Form)</title>
+<style>
+  :root{
+    --paper:#FBFAF8; --panel:#FFFFFF; --ink:#1E242B; --ink2:#3C454F;
+    --muted:#6B7480; --rule:#D8D2C8; --rule2:#ECE7DE;
+    --accent:#2F4A58; --accent2:#436173; --wash:#F2EFE9;
+    --low:#3B6B55; --lowbg:#EAF1EC;
+    --mod:#9A6B1E; --modbg:#F6EFE1;
+    --high:#8A3524; --highbg:#F4E7E2;
+    --serif:Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .sheet{max-width:860px;margin:0 auto;background:var(--panel);
+    border-left:1px solid var(--rule);border-right:1px solid var(--rule);min-height:100vh;}
+  .pad{padding:0 46px;}
+  @media(max-width:620px){.pad{padding:0 20px}}
+
+  /* masthead */
+  .mast{border-top:5px solid var(--accent);padding-top:30px;}
+  .mast .org{font-family:var(--serif);font-size:12px;letter-spacing:2.5px;
+    text-transform:uppercase;color:var(--accent2);}
+  .mast h1{font-family:var(--serif);font-weight:700;font-size:27px;line-height:1.15;
+    margin:10px 0 4px;color:var(--ink);}
+  .mast .full{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--ink2);margin:0 0 18px;}
+  .meta{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--rule);
+    border-bottom:1px solid var(--rule);margin-bottom:22px;}
+  .meta div{flex:1;min-width:150px;padding:9px 0;border-right:1px solid var(--rule2);}
+  .meta div:last-child{border-right:none}
+  .meta .k{font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+  .meta .v{font-size:13px;color:var(--ink2);font-weight:600;margin-top:2px;}
+
+  .note{background:var(--wash);border:1px solid var(--rule);
+    padding:16px 18px;margin:0 0 10px;font-size:13.5px;color:var(--ink2);}
+  .note b{color:var(--ink)}
+  .note.conf{border-left:3px solid var(--accent);}
+  .note.caution{border-left:3px solid var(--high);background:var(--highbg);color:#5c2619;}
+  .instr{margin:20px 0 6px;}
+  .instr h2{font-family:var(--serif);font-size:16px;color:var(--ink);margin:0 0 8px;
+    padding-bottom:6px;border-bottom:1px solid var(--rule);}
+  .instr p{font-size:13.5px;color:var(--ink2);margin:0 0 9px;}
+  .fields{display:flex;gap:16px;flex-wrap:wrap;margin:14px 0 4px;}
+  .fields label{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:4px;flex:1;min-width:140px;}
+  .fields input{font-family:var(--sans);font-size:14px;padding:7px 9px;border:1px solid var(--rule);
+    background:var(--paper);color:var(--ink);border-radius:2px;}
+  .fields input:focus{outline:none;border-color:var(--accent2);}
+
+  /* progress */
+  .prog{position:sticky;top:0;z-index:30;background:rgba(251,250,248,.96);
+    backdrop-filter:blur(3px);border-bottom:1px solid var(--rule);padding:10px 46px;}
+  @media(max-width:620px){.prog{padding:10px 20px}}
+  .prog .track{height:5px;background:var(--rule2);border-radius:0;overflow:hidden;}
+  .prog .fillb{height:100%;width:0;background:var(--accent);transition:width .35s ease;}
+  .prog .pt{font-size:11.5px;color:var(--muted);margin-top:5px;display:flex;justify-content:space-between;}
+
+  /* scale sections */
+  .scale{margin:34px 0 0;}
+  .scale-h{border-left:4px solid var(--accent);padding:2px 0 2px 14px;margin-bottom:4px;}
+  .scale-h .lab{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent2);font-weight:700;}
+  .scale-h h3{font-family:var(--serif);font-size:20px;margin:3px 0 0;color:var(--ink);}
+  .scale-h .cite{font-size:11.5px;color:var(--muted);font-style:italic;margin-top:3px;}
+  .scale-desc{font-size:13px;color:var(--ink2);margin:10px 0 14px;}
+
+  .anchors{display:grid;grid-template-columns:1fr repeat(5,46px);gap:0;
+    position:sticky;top:48px;z-index:20;background:var(--panel);
+    border-bottom:1.5px solid var(--accent);padding:7px 0;}
+  @media(max-width:620px){.anchors{grid-template-columns:1fr repeat(5,30px)}}
+  .anchors .sp{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;align-self:end;}
+  .anchors .a{font-size:10px;color:var(--muted);text-align:center;line-height:1.1;align-self:end;}
+  @media(max-width:620px){.anchors .a{font-size:9px}}
+
+  .facet{margin-top:14px;}
+  .facet-t{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--accent2);
+    font-weight:700;margin:6px 0 2px;}
+  .item{display:grid;grid-template-columns:1fr repeat(5,46px);align-items:center;
+    gap:0;padding:9px 0;border-bottom:1px solid var(--rule2);}
+  @media(max-width:620px){.item{grid-template-columns:1fr repeat(5,30px)}}
+  .item:hover{background:#FCFBF8}
+  .item.done .stmt{color:var(--ink)}
+  .stmt{font-size:14px;color:var(--ink2);padding-right:14px;}
+  .stmt .n{color:var(--muted);font-variant-numeric:tabular-nums;margin-right:7px;font-size:12.5px;}
+  .cellr{display:flex;justify-content:center;}
+  .cellr input{appearance:none;-webkit-appearance:none;width:17px;height:17px;border:1.5px solid var(--rule);
+    border-radius:50%;cursor:pointer;position:relative;transition:border-color .15s;margin:0;}
+  .cellr input:hover{border-color:var(--accent2)}
+  .cellr input:checked{border-color:var(--accent);}
+  .cellr input:checked::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--accent);}
+
+  .section-sep{height:1px;background:var(--rule);margin:30px 0 0;}
+
+  .submitwrap{margin:34px 0 10px;padding-top:22px;border-top:2px solid var(--accent);text-align:center;}
+  .btn{font-family:var(--sans);background:var(--accent);color:#fff;border:none;
+    padding:13px 30px;font-size:15px;font-weight:600;letter-spacing:.3px;cursor:pointer;
+    border-radius:2px;transition:background .15s;}
+  .btn:hover{background:var(--accent2)}
+  .btn:disabled{background:#B9C0C6;cursor:not-allowed}
+  .btn.ghost{background:none;color:var(--accent);border:1px solid var(--accent);}
+  .btn.ghost:hover{background:var(--wash)}
+  .warn{color:var(--high);font-size:12.5px;margin-top:12px;min-height:16px;}
+
+  /* report */
+  #report{display:none;margin-top:30px;}
+  .rep-mast{border-top:4px solid var(--accent);padding-top:18px;}
+  .rep-mast .org{font-family:var(--serif);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);}
+  .rep-mast h2{font-family:var(--serif);font-size:23px;margin:7px 0 2px;}
+  .rep-mast .sub{font-size:12.5px;color:var(--muted);margin-bottom:18px;}
+  .summary{display:grid;grid-template-columns:120px 1fr;gap:0;border:1px solid var(--rule);margin-bottom:8px;}
+  .summary .sig{padding:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-right:1px solid var(--rule);}
+  .summary .sig .dotL{width:38px;height:38px;border-radius:50%;}
+  .summary .sig .sg{font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:700;}
+  .summary .txt{padding:16px 18px;font-size:13.5px;color:var(--ink2);}
+
+  table.rep{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px;}
+  table.rep th{text-align:left;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;
+    color:var(--muted);border-bottom:1.5px solid var(--accent);padding:7px 8px;font-weight:700;}
+  table.rep td{padding:9px 8px;border-bottom:1px solid var(--rule2);vertical-align:middle;}
+  table.rep tr.scaleRow td{background:var(--wash);font-weight:700;color:var(--ink);font-family:var(--serif);}
+  table.rep tr.facetRow td:first-child{padding-left:20px;color:var(--ink2);}
+  .meter{height:9px;background:var(--rule2);border-radius:2px;overflow:hidden;min-width:90px;}
+  .meter > i{display:block;height:100%;border-radius:2px;}
+  .scoreN{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12px;}
+  .pill{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+    padding:2px 8px;border-radius:2px;white-space:nowrap;}
+  .interp{margin:18px 0;}
+  .interp h3{font-family:var(--serif);font-size:16px;margin:0 0 7px;padding-bottom:5px;border-bottom:1px solid var(--rule);}
+  .interp p{font-size:13.5px;color:var(--ink2);margin:0 0 9px;}
+  .valbox{border:1px solid var(--rule);padding:13px 15px;font-size:13px;color:var(--ink2);margin:14px 0;}
+  .valbox .vh{font-weight:700;color:var(--ink);font-size:12px;text-transform:uppercase;letter-spacing:.8px;}
+  .repfoot{font-size:11.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:14px;margin-top:22px;}
+  footer.pg{border-top:1px solid var(--rule);margin-top:40px;padding:20px 0 34px;
+    font-size:11px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="prog">
+    <div class="track"><div class="fillb" id="fillb"></div></div>
+    <div class="pt"><span id="ptL">Section 0 of 5</span><span id="ptR">0 / 0 items</span></div>
+  </div>
+
+  <div class="pad">
+    <div class="mast">
+      <div class="org">AreyTech &nbsp;·&nbsp; Athlete Safeguarding Research</div>
+      <h1>Youth Coach Behavioral Assessment</h1>
+      <p class="full">A structured self-report screen for behavioral risk markers in youth sport coaching — Self-Report Form (YCBA-SR)</p>
+      <div class="meta">
+        <div><div class="k">Form</div><div class="v">YCBA-SR · v1.0</div></div>
+        <div><div class="k">Items</div><div class="v" id="metaItems">—</div></div>
+        <div><div class="k">Administration</div><div class="v">~12–15 min</div></div>
+        <div><div class="k">Status</div><div class="v">Research Prototype</div></div>
+      </div>
+    </div>
+
+    <div class="note caution"><b>Prototype — not a validated instrument.</b> This form demonstrates the structure and item logic of the YCBA concept. Items are adapted from the research literature on established measures (FFNI, LSRP, Buss–Perry, MSI-BPD, Controlling Coach Behaviours Scale) but have <b>not</b> been psychometrically validated in this combination. It must not be used for any real hiring, licensure, disciplinary, or clinical decision.</div>
+
+    <div class="note conf"><b>Confidentiality.</b> In a live deployment, responses would be stored securely, released only to trained reviewers, and governed by informed consent under an approved IRB protocol. This demo stores nothing and runs entirely in your browser.</div>
+
+    <div class="instr">
+      <h2>Instructions</h2>
+      <p>The statements below describe thoughts, feelings, and behaviors a coach might have. For each one, indicate how <b>characteristic or true it is of you</b> as a coach, using the 5-point scale. There are no right or wrong answers — the screen works only when responses are candid.</p>
+      <p>Answer every item. Rate your <i>typical</i> self across a full season, not a single good or bad day.</p>
+      <div class="fields">
+        <label>Respondent ID (optional)<input type="text" id="fId" placeholder="e.g., initials or code"></label>
+        <label>Date<input type="text" id="fDate" placeholder="MM / DD / YYYY"></label>
+        <label>Sport / Age group<input type="text" id="fSport" placeholder="e.g., U14 soccer"></label>
+      </div>
+    </div>
+
+    <form id="ycba"></form>
+
+    <div class="submitwrap">
+      <button type="button" class="btn" id="submitBtn" disabled>Generate scored report</button>
+      <div class="warn" id="warn"></div>
+    </div>
+
+    <div id="report"></div>
+
+    <footer class="pg">
+      <span>YCBA-SR v1.0 · Confidential research prototype</span>
+      <span>AreyTech · Athlete Safeguarding Research</span>
+    </footer>
+  </div>
+</div>
+
+<script>
+/* ---------- Instrument definition ----------
+   Each scale has facets; each facet has items.
+   key "+" = scored toward trait (higher agreement = more risk).
+   Validity scale uses impression-management absolutes (high agreement = defensive).
+*/
+const ANCHORS = ["Not at all true","Slightly true","Moderately true","Very true","Extremely true"];
+
+const SCALES = [
+  { id:"A", name:"Grandiose Narcissism", accentFacets:true,
+    cite:"Adapted from the Five-Factor Narcissism Inventory (FFNI): entitlement, exploitativeness, empathy, need for admiration, arrogance.",
+    desc:"Measures an inflated sense of superiority and entitlement, exploitation of others, limited empathy, and a strong need for admiration — a pattern linked to coaches who prioritize their own status over athlete welfare.",
+    facets:[
+      {t:"Entitlement", items:[
+        "I deserve special recognition for everything I do for my athletes.",
+        "I should not have to follow the same procedures and rules as other coaches."]},
+      {t:"Exploitativeness", items:[
+        "I am willing to use an athlete's weaknesses to get the result I want.",
+        "I can get athletes or parents to do what I want by carefully managing how I come across."]},
+      {t:"Lack of empathy", items:[
+        "I don't spend much time thinking about how my athletes feel.",
+        "An athlete's emotional reaction is not really my concern as long as they perform."]},
+      {t:"Need for admiration", items:[
+        "It genuinely bothers me when my role in a win goes unrecognized.",
+        "I want everyone around the program to see me as exceptional."]},
+      {t:"Arrogance / authority", items:[
+        "I am simply a better coach than most of my peers.",
+        "My judgment should not be questioned by athletes or parents."]}
+    ]},
+
+  { id:"B", name:"Callous / Antisocial Tendencies",
+    cite:"Adapted from the Levenson Self-Report Psychopathy Scale (LSRP): primary (callousness, manipulation) and secondary (impulsivity, rule-breaking) features.",
+    desc:"Measures callousness and lack of remorse, willingness to deceive or manipulate, disregard for rules, and impulsive irresponsibility — the markers most associated with predatory or exploitative conduct.",
+    facets:[
+      {t:"Callousness / lack of remorse", items:[
+        "I rarely feel bad after being hard on an athlete, even when I went too far.",
+        "Winning matters more to me than whether I treated people fairly to get there."]},
+      {t:"Deceit / manipulation", items:[
+        "I will say whatever is needed to keep a parent or athlete on my side.",
+        "Bending the truth is acceptable if it protects my standing or my job."]},
+      {t:"Disregard for rules", items:[
+        "I will ignore a rule or safeguarding guideline if I think it gets in the way of winning.",
+        "I have broken program or league rules when I was confident no one would find out."]},
+      {t:"Impulsivity / irresponsibility", items:[
+        "I act on impulse during competition without weighing the consequences.",
+        "I often fail to follow through on commitments I make to athletes or staff."]}
+    ]},
+
+  { id:"C", name:"Anger & Aggression",
+    cite:"Adapted from the Buss–Perry Aggression Questionnaire and STAXI: anger, verbal aggression, physical aggression, hostility.",
+    desc:"Measures poorly-controlled temper, verbal and physical aggression under frustration, and a hostile, suspicious outlook — behaviors that create a climate of fear for young athletes.",
+    facets:[
+      {t:"Anger / temper", items:[
+        "I lose my temper during practice or games more than I should.",
+        "Small mistakes by athletes can set off my anger very quickly."]},
+      {t:"Verbal aggression", items:[
+        "I raise my voice, insult, or belittle athletes when I'm frustrated.",
+        "When I disagree with officials or staff, I argue openly and heatedly."]},
+      {t:"Physical aggression", items:[
+        "I have thrown, kicked, or slammed equipment when a session went badly.",
+        "When angry enough, I have become physically intimidating toward someone."]},
+      {t:"Hostility / suspicion", items:[
+        "I often feel that other people are working against me or my program.",
+        "I hold on to grudges against athletes, parents, or rival coaches."]}
+    ]},
+
+  { id:"D", name:"Emotional Volatility & Controlling Attachment",
+    cite:"Adapted from the McLean Screening Instrument for BPD and the Controlling Coach Behaviours Scale.",
+    desc:"Measures rapid mood shifts, unstable idealizing-then-devaluing of athletes, intense reactions to perceived disloyalty, and the use of approval or attention as a means of control.",
+    facets:[
+      {t:"Affective instability", items:[
+        "My mood during practice can shift suddenly, and the team can feel it.",
+        "My emotions swing more intensely and quickly than most coaches'."]},
+      {t:"Idealization–devaluation", items:[
+        "My view of an athlete can flip from favorite to deep disappointment very quickly.",
+        "I tend to see athletes as either fully with me or against me."]},
+      {t:"Reactivity to disloyalty", items:[
+        "When I feel let down by an athlete, my reaction is more intense than the situation warrants.",
+        "I react strongly when I sense an athlete pulling away from me."]},
+      {t:"Controlling / conditional regard", items:[
+        "I use my approval or attention to keep athletes from drifting from me.",
+        "I show warmth to athletes mainly when they perform the way I want."]}
+    ]},
+
+  { id:"V", name:"Response Validity (Impression Management)", validity:true,
+    cite:"Adapted from the Balanced Inventory of Desirable Responding (BIDR): impression-management items.",
+    desc:"These items state near-impossible absolutes. Strong agreement across them suggests a defensive, overly favorable response style — meaning the trait scores above may under-represent actual risk.",
+    facets:[
+      {t:"Impression management", items:[
+        "I never let my emotions affect how I treat an athlete.",
+        "I have never once said anything to an athlete that I later regretted.",
+        "I always keep every promise I make, without exception.",
+        "I am never irritated when my decisions are questioned.",
+        "I treat every athlete exactly equally at all times."]}
+    ]}
+];
+
+/* ---------- Build the form ---------- */
+const form = document.getElementById("ycba");
+let qn = 0; const itemMap = [];
+SCALES.forEach((sc, si)=>{
+  const sec = document.createElement("section");
+  sec.className = "scale"; sec.id = "sec"+sc.id;
+  let html = `<div class="scale-h"><div class="lab">Scale ${sc.id==="V"?"V":sc.id} — ${sc.validity?"Validity":"Behavioral domain"}</div>
+      <h3>${sc.name}</h3><div class="cite">${sc.cite}</div></div>
+      <div class="scale-desc">${sc.desc}</div>
+      <div class="anchors"><div class="sp">${sc.validity?"Statement":"How true of you"}</div>${
+        ANCHORS.map((a,i)=>`<div class="a">${i+1}<br>${a.replace(" ","<br>")}</div>`).join("")}</div>`;
+  sc.facets.forEach(fac=>{
+    html += `<div class="facet"><div class="facet-t">${fac.t}</div>`;
+    fac.items.forEach(text=>{
+      qn++; const id = qn;
+      itemMap.push({id, scale:sc.id});
+      html += `<div class="item" id="it${id}"><div class="stmt"><span class="n">${id}.</span>${text}</div>${
+        [1,2,3,4,5].map(v=>`<div class="cellr"><input type="radio" name="q${id}" value="${v}" aria-label="${ANCHORS[v-1]}"></div>`).join("")}</div>`;
+    });
+    html += `</div>`;
+  });
+  sec.innerHTML = html;
+  form.appendChild(sec);
+  if(si < SCALES.length-1){ const s=document.createElement("div"); s.className="section-sep"; form.appendChild(s); }
+});
+const TOTAL = qn;
+document.getElementById("metaItems").textContent = TOTAL + " self-report";
+document.getElementById("ptR").textContent = `0 / ${TOTAL} items`;
+
+/* ---------- Progress ---------- */
+const fillb=document.getElementById("fillb"), ptL=document.getElementById("ptL"),
+  ptR=document.getElementById("ptR"), submitBtn=document.getElementById("submitBtn"), warn=document.getElementById("warn");
+function answered(){let n=0;for(let i=1;i<=TOTAL;i++) if(form.querySelector(`input[name="q${i}"]:checked`)) n++; return n;}
+form.addEventListener("change", e=>{
+  const it=e.target.closest(".item"); if(it) it.classList.add("done");
+  const n=answered();
+  fillb.style.width=(n/TOTAL*100)+"%";
+  ptR.textContent=`${n} / ${TOTAL} items`;
+  // which section user is in
+  let secDone=0;
+  SCALES.forEach((sc,i)=>{ const first=itemMap.find(m=>m.scale===sc.id).id;
+    if(form.querySelector(`input[name="q${first}"]:checked`)) secDone=i+1; });
+  ptL.textContent=`Section ${Math.min(secDone,5)} of 5`;
+  submitBtn.disabled = n<TOTAL;
+  if(n===TOTAL) warn.textContent="";
+});
+
+/* ---------- Scoring ---------- */
+function bandFor(mean){
+  if(mean < 2.0) return {k:"low", name:"Low", color:"var(--low)", bg:"var(--lowbg)"};
+  if(mean < 3.0) return {k:"mod", name:"Moderate", color:"var(--mod)", bg:"var(--modbg)"};
+  return {k:"high", name:"Elevated", color:"var(--high)", bg:"var(--highbg)"};
+}
+const SCALE_INTERP = {
+  A:{low:"shows little grandiose or entitled thinking.",
+     mod:"shows some entitlement or need for recognition that is worth monitoring.",
+     high:"endorses a consistent pattern of superiority, entitlement, and low empathy that warrants structured review."},
+  B:{low:"reports low callous or rule-breaking tendencies.",
+     mod:"reports some willingness to bend rules or act impulsively — a domain to probe further.",
+     high:"endorses callousness, manipulation, or rule-disregard at a level that should be flagged for follow-up."},
+  C:{low:"reports well-regulated anger and little aggression.",
+     mod:"reports a temper that occasionally slips into verbal edge — worth coaching support.",
+     high:"endorses frequent temper loss, verbal or physical aggression, or hostility that creates risk for athletes."},
+  D:{low:"reports stable mood and non-controlling relationships with athletes.",
+     mod:"reports some emotional reactivity or conditional warmth to watch.",
+     high:"endorses rapid mood swings, unstable attachments, and controlling use of approval that warrants review."}
+};
+
+function val(id){const el=form.querySelector(`input[name="q${id}"]:checked`);return el?+el.value:0;}
+
+submitBtn.addEventListener("click", ()=>{
+  if(answered()<TOTAL){warn.textContent="Please answer every item before generating the report.";return;}
+  const rows=[]; let worst={k:"low"}; const order={low:0,mod:1,high:2};
+  const behavioral = SCALES.filter(s=>!s.validity);
+  const scaleResults=[];
+  behavioral.forEach(sc=>{
+    let all=[];
+    const ids = itemMap.filter(m=>m.scale===sc.id).map(m=>m.id);
+    let ptr=0; const fRes=[];
+    sc.facets.forEach(fac=>{
+      const vals=[]; for(let k=0;k<fac.items.length;k++){vals.push(val(ids[ptr++]));}
+      const m=vals.reduce((a,b)=>a+b,0)/vals.length;
+      all=all.concat(vals);
+      fRes.push({name:fac.t, mean:m, band:bandFor(m)});
+    });
+    const scMean=all.reduce((a,b)=>a+b,0)/all.length;
+    const b=bandFor(scMean);
+    if(order[b.k]>order[worst.k]) worst=b;
+    scaleResults.push({sc, mean:scMean, band:b, facets:fRes});
+  });
+
+  // validity
+  const vids=itemMap.filter(m=>m.scale==="V").map(m=>m.id);
+  const vvals=vids.map(id=>val(id));
+  const vMean=vvals.reduce((a,b)=>a+b,0)/vvals.length;
+  let vFlag;
+  if(vMean>=4.0) vFlag={k:"high",name:"Elevated",color:"var(--high)",msg:"The respondent strongly endorsed near-impossible absolutes. This indicates a defensive, overly favorable response style — the trait scores above likely <b>under-represent</b> actual risk and should be interpreted with caution."};
+  else if(vMean>=3.0) vFlag={k:"mod",name:"Moderate",color:"var(--mod)",msg:"Some defensiveness is present. Trait scores may be mildly under-reported; corroborate with observer reports where possible."};
+  else vFlag={k:"low",name:"Acceptable",color:"var(--low)",msg:"No strong evidence of impression management. The self-report can be read at face value, within the limits of any self-report screen."};
+
+  renderReport(scaleResults, worst, vMean, vFlag);
+});
+
+function barPct(mean){return ((mean-1)/4*100).toFixed(0);}
+function pill(band){return `<span class="pill" style="color:${band.color};background:${band.bg||'transparent'};border:1px solid ${band.color}">${band.name}</span>`;}
+
+function renderReport(scaleResults, worst, vMean, vFlag){
+  const id=(document.getElementById("fId").value||"—");
+  const date=(document.getElementById("fDate").value||new Date().toLocaleDateString());
+  const sport=(document.getElementById("fSport").value||"—");
+
+  let tbl=`<table class="rep"><thead><tr><th>Domain / facet</th><th>Profile</th><th style="width:70px">Mean</th><th style="width:96px">Band</th></tr></thead><tbody>`;
+  scaleResults.forEach(r=>{
+    tbl+=`<tr class="scaleRow"><td>Scale ${r.sc.id} · ${r.sc.name}</td>
+      <td><div class="meter"><i style="width:${barPct(r.mean)}%;background:${r.band.color}"></i></div></td>
+      <td class="scoreN">${r.mean.toFixed(2)}</td><td>${pill(r.band)}</td></tr>`;
+    r.facets.forEach(f=>{
+      tbl+=`<tr class="facetRow"><td>${f.name}</td>
+        <td><div class="meter"><i style="width:${barPct(f.mean)}%;background:${f.band.color};opacity:.7"></i></div></td>
+        <td class="scoreN">${f.mean.toFixed(2)}</td><td><span class="pill" style="color:${f.band.color}">${f.band.name}</span></td></tr>`;
+    });
+  });
+  tbl+=`<tr class="scaleRow"><td>Scale V · Response Validity</td>
+    <td><div class="meter"><i style="width:${barPct(vMean)}%;background:${vFlag.color}"></i></div></td>
+    <td class="scoreN">${vMean.toFixed(2)}</td><td><span class="pill" style="color:${vFlag.color};border:1px solid ${vFlag.color}">${vFlag.name}</span></td></tr>`;
+  tbl+=`</tbody></table>`;
+
+  const worstName={low:"No elevated domains",mod:"Moderate — recommend review",high:"Elevated — flag for structured follow-up"}[worst.k];
+  const worstTxt={
+    low:"No behavioral domain reached the elevated range. This is a reassuring screen, but a single self-report is never sufficient on its own.",
+    mod:"One or more domains fell in the moderate range. The recommended next step is a supportive conversation and corroboration with observer reports, not any adverse action.",
+    high:"One or more domains reached the elevated range. In a live system this profile would be routed to a trained reviewer for structured follow-up alongside observer reports and context — it would never, by itself, decide an outcome."
+  }[worst.k];
+
+  // narrative
+  let narr="";
+  scaleResults.forEach(r=>{
+    narr += `<p><b>Scale ${r.sc.id} — ${r.sc.name} (${r.band.name}).</b> The respondent ${SCALE_INTERP[r.sc.id][r.band.k]}`;
+    const hiFac=r.facets.filter(f=>f.band.k==="high").map(f=>f.name);
+    if(hiFac.length) narr+=` Elevated facet(s): ${hiFac.join(", ")}.`;
+    narr+=`</p>`;
+  });
+
+  const rep=document.getElementById("report");
+  rep.innerHTML = `
+    <div class="rep-mast">
+      <div class="org">AreyTech · Athlete Safeguarding Research</div>
+      <h2>YCBA-SR Scored Report</h2>
+      <div class="sub">Respondent ${id} &nbsp;·&nbsp; ${sport} &nbsp;·&nbsp; ${date} &nbsp;·&nbsp; Confidential prototype output</div>
+    </div>
+    <div class="summary">
+      <div class="sig" style="background:${worst.bg||'var(--wash)'}">
+        <div class="dotL" style="background:${worst.color||'var(--low)'}"></div>
+        <div class="sg" style="color:${worst.color||'var(--low)'}">${worst.k}</div>
+      </div>
+      <div class="txt"><b style="font-size:15px;font-family:var(--serif)">${worstName}</b><br>${worstTxt}</div>
+    </div>
+    ${tbl}
+    <div class="valbox"><div class="vh" style="color:${vFlag.color}">Response validity — ${vFlag.name}</div>
+      <div style="margin-top:6px">${vFlag.msg}</div></div>
+    <div class="interp"><h3>Domain interpretation</h3>${narr}</div>
+    <div class="interp"><h3>Use &amp; limits</h3>
+      <p>This demo computes a mean (1–5) per facet and domain, banded as Low (&lt;2.0), Moderate (2.0–2.9), or Elevated (&ge;3.0). Real thresholds would be set empirically against a validation sample and calibrated to a defined base rate.</p>
+      <p>A screen like this is one input among several. It is designed to <i>route attention</i>, not to label a person. Any consequential decision requires trained human review, corroborating observer data (athletes, parents, assistants), and due process.</p>
+    </div>
+    <div class="repfoot">Generated locally · no data transmitted or stored · YCBA-SR v1.0 research prototype. Instrument content adapted from published descriptions of the FFNI, LSRP, Buss–Perry AQ, STAXI, MSI-BPD, Controlling Coach Behaviours Scale, and BIDR. Not validated for applied use.</div>
+    <div class="submitwrap" style="border-top:none;padding-top:10px">
+      <button type="button" class="btn ghost" id="restartBtn">Clear &amp; retake</button>
+    </div>`;
+  rep.style.display="block";
+  rep.scrollIntoView({behavior:"smooth"});
+  document.getElementById("restartBtn").addEventListener("click", ()=>{
+    form.reset();
+    document.querySelectorAll(".item").forEach(x=>x.classList.remove("done"));
+    fillb.style.width="0"; ptR.textContent=`0 / ${TOTAL} items`; ptL.textContent="Section 0 of 5";
+    submitBtn.disabled=true; rep.style.display="none";
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+}
+</script>
+</body>
+</html>
